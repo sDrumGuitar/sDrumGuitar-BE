@@ -11,23 +11,23 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class StudentEntity extends BaseEntity{
+public class Student extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 10)
+    @Column(nullable = false, length = 10)
     private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "age_group", nullable = false, length = 20)
     private AgeGroup ageGroup;
 
-    @Column(name = "phone", length = 20)
+    @Column(length = 20)
     private String phone;
 
-    @Column(name = "parent_phone", length = 20)
+    @Column(length = 20)
     private String parentPhone;
 
     @Column(name = "family_discount", nullable = false)
