@@ -1,10 +1,11 @@
 package teamDBMS.sDrumGuitarBE.student.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class CreateStudentRequest {
 
     @NotNull
     @JsonProperty("age_group")
-    private AgeGroupDto ageGroup;
+    private Student.AgeGroup ageGroup;
 
     @Size(max = 20)
     private String phone;
