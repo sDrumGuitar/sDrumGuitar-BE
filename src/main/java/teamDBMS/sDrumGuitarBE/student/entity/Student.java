@@ -6,7 +6,6 @@ import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 import lombok.*;
 
 @Entity
-@Table(name = "students")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,22 +19,22 @@ public class Student extends BaseEntity{
     @Column(nullable = false, length = 10)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_group", nullable = false, length = 20)
-    private AgeGroup ageGroup;
-
     @Column(length = 20)
     private String phone;
 
     @Column(length = 20)
     private String parentPhone;
 
-    @Column(name = "family_discount", nullable = false)
+    @Column(nullable = false)
     @Builder.Default
     private boolean familyDiscount = false;
 
     @Lob
     private String memo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AgeGroup ageGroup;
 
     public enum AgeGroup {
         PRESCHOOL, ELEMENT, MIDDLE, HIGH, ADULT
