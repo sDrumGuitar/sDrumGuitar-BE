@@ -33,6 +33,9 @@ public class CreateStudentResponse {
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
+
     public static CreateStudentResponse from(Student student) {
         return CreateStudentResponse.builder()
                 .studentId(student.getId())
@@ -43,6 +46,7 @@ public class CreateStudentResponse {
                 .memo(student.getMemo())
                 .familyDiscount(student.isFamilyDiscount())
                 .createdAt(student.getCreatedAt())
+                .updatedAt(student.getEditedAt())
                 .build();
     }
 }
