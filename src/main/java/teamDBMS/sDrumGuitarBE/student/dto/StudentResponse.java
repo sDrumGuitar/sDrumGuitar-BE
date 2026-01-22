@@ -6,38 +6,31 @@ import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 @Getter
 @Builder
-public class CreateStudentResponse {
+public class StudentResponse {
 
-    @JsonProperty("student_id")
     private Long studentId;
 
     private String name;
 
-    @JsonProperty("age_group")
-    private String ageGroup; // "adult" 처럼 내려주려면 String이 편함
+    private String ageGroup;
 
     private String phone;
 
-    @JsonProperty("parent_phone")
     private String parentPhone;
 
     private String memo;
 
-    @JsonProperty("family_discount")
     private boolean familyDiscount;
 
-    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
-    public static CreateStudentResponse from(Student student) {
-        return CreateStudentResponse.builder()
+    public static StudentResponse from(Student student) {
+        return StudentResponse.builder()
                 .studentId(student.getId())
                 .name(student.getName())
                 .ageGroup(student.getAgeGroup().name())
