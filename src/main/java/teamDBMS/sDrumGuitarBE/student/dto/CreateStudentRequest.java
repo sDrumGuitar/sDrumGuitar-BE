@@ -34,5 +34,15 @@ public class CreateStudentRequest {
         boolean hasParent = parentPhone != null && !parentPhone.isBlank();
         return hasPhone || hasParent;
     }
+
+    public Student toEntity() {
+        return Student.builder()
+                .name(name)
+                .ageGroup(ageGroup)
+                .phone(phone)
+                .parentPhone(parentPhone)
+                .memo(memo)
+                .build();
+    }
 }
 
