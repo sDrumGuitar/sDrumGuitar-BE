@@ -37,12 +37,12 @@ public class CreateStudentResponse {
         return CreateStudentResponse.builder()
                 .studentId(student.getId())
                 .name(student.getName())
-                .ageGroup(student.getAgeGroup().name().toLowerCase()) // enum -> "adult"
+                .ageGroup(student.getAgeGroup().name())
                 .phone(student.getPhone())
                 .parentPhone(student.getParentPhone())
                 .memo(student.getMemo())
-                .familyDiscount(student.isFamilyDiscount()) // 없으면 false 고정해도 됨
-                .createdAt(student.getCreatedAt())          // BaseEntity에 createdAt 있으면
+                .familyDiscount(student.isFamilyDiscount())
+                .createdAt(student.getCreatedAt())
                 .build();
     }
 }

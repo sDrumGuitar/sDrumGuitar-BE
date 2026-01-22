@@ -1,5 +1,6 @@
 package teamDBMS.sDrumGuitarBE.student.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 
@@ -37,7 +38,13 @@ public class Student extends BaseEntity{
     private AgeGroup ageGroup;
 
     public enum AgeGroup {
-        PRESCHOOL, ELEMENT, MIDDLE, HIGH, ADULT
+        PRESCHOOL, ELEMENT, MIDDLE, HIGH, ADULT;
+
+        @JsonCreator
+        public static AgeGroup from(String value) {
+            if (value == null) return null;
+            return AgeGroup.valueOf(value.trim().toUpperCase());
+        }
     }
 
     // 업데이트용 메서드 - 추후 규칙 생기면 추가
