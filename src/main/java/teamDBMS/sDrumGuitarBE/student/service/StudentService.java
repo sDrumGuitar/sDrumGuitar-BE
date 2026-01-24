@@ -1,7 +1,7 @@
 package teamDBMS.sDrumGuitarBE.student.service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,15 +14,11 @@ import teamDBMS.sDrumGuitarBE.student.repository.StudentRepository;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
 
-
-    @Autowired
-    public StudentService(StudentRepository studentRepository){
-        this.studentRepository = studentRepository;
-    }
     @Transactional
     public StudentResponse create(CreateStudentRequest request) {
         Student student = request.toEntity();
