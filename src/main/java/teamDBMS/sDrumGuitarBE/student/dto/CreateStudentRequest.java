@@ -2,7 +2,6 @@ package teamDBMS.sDrumGuitarBE.student.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
@@ -44,5 +43,6 @@ public class CreateStudentRequest {
                 .memo(memo)
                 .build();
     }
+
 }
 
