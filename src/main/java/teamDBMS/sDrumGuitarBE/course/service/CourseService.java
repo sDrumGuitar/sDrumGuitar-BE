@@ -11,6 +11,9 @@ import teamDBMS.sDrumGuitarBE.invoice.dto.CreateInvoiceRequest;
 import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceResponse;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
 import teamDBMS.sDrumGuitarBE.invoice.service.InvoiceSerive;
+import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
+import teamDBMS.sDrumGuitarBE.lesson.repository.LessonRepository;
+import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleResponse;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 import teamDBMS.sDrumGuitarBE.schedule.service.ScheduleService;
@@ -26,8 +29,10 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final InvoiceSerive invoiceService;
+    private final LessonRepository lessonRepository;
 
     private final ScheduleService scheduleService;
+    private final LessonService lessonService;
 
     @Transactional
     public CourseResponse createCourse(CreateCourseRequest req) {
@@ -44,12 +49,19 @@ public class CourseService {
                 .startDate(req.getStartDate())
                 .build();
 
-        courseRepository.save(course);
+        Course savedCourse = courseRepository.save(course);
 
-        List<Schedule> schedules = scheduleService.createSchedules(course, req.getSchedules());
+        List<Schedule> schedules = scheduleService.createSchedules(savedCourse, req.getSchedules());
 
         CreateInvoiceRequest invReq = req.getInvoice();
-        Invoice invoice = invoiceService.createInvoice(course, student, invReq);
+        Invoice invoice = invoiceService.createInvoice(savedCourse, student, invReq);
+
+
+        List<Lesson> sessions = lessonService.generateLessons(savedCourse,
+                req.getStartDate(),
+                req.getLessonCount(),
+                req.getSchedules());
+        lessonRepository.saveAll(sessions);
 
         // 5) Response 반환
         return CourseResponse.from(course, schedules, invoice);
