@@ -2,6 +2,9 @@ package teamDBMS.sDrumGuitarBE.student.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,15 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
 
-
-    @Autowired
-    public StudentService(StudentRepository studentRepository){
-        this.studentRepository = studentRepository;
-    }
     @Transactional
     public StudentResponse create(CreateStudentRequest request) {
         Student student = request.toEntity();
