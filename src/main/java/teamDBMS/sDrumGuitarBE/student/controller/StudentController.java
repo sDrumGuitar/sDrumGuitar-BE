@@ -48,5 +48,9 @@ public class StudentController {
                 .build();
     }
 
+    @GetMapping("/{studentId}")
+    public ResponseEntity<StudentResponse> getStudent(@PathVariable Long studentId) {
+        return ResponseEntity.ok(studentService.getStudent(studentId));
+    }
 
 }

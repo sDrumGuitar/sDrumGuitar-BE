@@ -1,6 +1,9 @@
 package teamDBMS.sDrumGuitarBE.student.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,9 +12,11 @@ import teamDBMS.sDrumGuitarBE.student.dto.CreateStudentRequest;
 import teamDBMS.sDrumGuitarBE.student.dto.EveryStudent;
 import teamDBMS.sDrumGuitarBE.student.dto.StudentResponse;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
+import teamDBMS.sDrumGuitarBE.student.exception.StudentNotFoundException;
 import teamDBMS.sDrumGuitarBE.student.repository.StudentRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +47,14 @@ public class StudentService {
 
     public Page<Student> getStudents(Pageable pageable) {
         return studentRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public StudentResponse getStudent(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException(studentId));
+
+        return StudentResponse.from(student);
     }
 
 
