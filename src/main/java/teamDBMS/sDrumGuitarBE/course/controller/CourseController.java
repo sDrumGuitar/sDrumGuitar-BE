@@ -10,7 +10,7 @@ import teamDBMS.sDrumGuitarBE.course.service.CourseService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/courses")
+@RequestMapping("/api/courses")
 public class CourseController {
 
     private final CourseService courseService;
