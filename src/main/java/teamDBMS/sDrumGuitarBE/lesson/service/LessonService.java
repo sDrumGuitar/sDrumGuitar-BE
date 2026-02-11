@@ -4,7 +4,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
+import teamDBMS.sDrumGuitarBE.lesson.dto.LessonAttendanceResponse;
 import teamDBMS.sDrumGuitarBE.lesson.dto.MonthlyLessonsResponse;
+import teamDBMS.sDrumGuitarBE.lesson.dto.UpdateLessonAttendanceRequest;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 import teamDBMS.sDrumGuitarBE.lesson.repository.LessonRepository;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
@@ -127,5 +129,27 @@ public class LessonService {
                 .attendanceStatus(l.getAttendanceStatus().name().toLowerCase()) // "notyet"
                 .startAt(l.getStartAt().toString()) // "2026-11-03T15:00"
                 .build();
+    }
+    
+    @Transactional
+    public LessonAttendanceResponse updateAttendance(Long lessonId, UpdateLessonAttendanceRequest req) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("lesson not found: " + lessonId));
+
+        Lesson.AttendanceStatus newStatus = req.toAttendanceStatus();
+
+        // 허용 값 체크(혹시 enum에 다른 값이 있으면 방어)
+        if (newStatus != Lesson.AttendanceStatus.ATTENDED
+                && newStatus != Lesson.AttendanceStatus.ABSENT
+                && newStatus != Lesson.AttendanceStatus.ROLLOVER) {
+            throw new IllegalArgumentException("invalid attendance_status: " + req.getAttendanceStatus());
+        }
+
+        lesson.updateAttendance(newStatus);
+
+        // JPA dirty checking으로 저장됨 (굳이 save 안 해도 됨)
+        // lessonRepository.save(lesson);
+
+        return LessonAttendanceResponse.from(lesson);
     }
 }
