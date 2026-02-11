@@ -53,4 +53,21 @@ public class Lesson extends BaseEntity {
     public enum AttendanceStatus {
         NOTYET, ATTENDED, ABSENT, MAKEUP, ROLLOVER
     }
+
+    public void updateAttendance(AttendanceStatus newStatus) {
+        this.attendanceStatus = newStatus;
+
+        // 스펙: 출석/결석/이월 처리 시 lesson_tag는 normal로
+        this.lessonTag = LessonTag.NORMAL;
+
+        // 스펙: start_at / before_at 변경 없음
+        // this.startAt 그대로
+        // this.beforeAt 그대로
+    }
+
+    public boolean isAttendanceFinalized() {
+        // "이미 출결이 확정된 회차" 판단 기준:
+        // NOTYET 이 아니면 이미 확정 처리된 것으로 봄
+        return this.attendanceStatus != AttendanceStatus.NOTYET;
+    }
 }
