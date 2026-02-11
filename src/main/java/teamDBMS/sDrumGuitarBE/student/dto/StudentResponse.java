@@ -39,7 +39,7 @@ public class StudentResponse {
                 .memo(student.getMemo())
                 .familyDiscount(student.isFamilyDiscount())
                 .createdAt(student.getCreatedAt())
-                .updatedAt(student.getEditedAt())
+                .updatedAt(student.getUpdatedAt())
                 .build();
     }
 }
