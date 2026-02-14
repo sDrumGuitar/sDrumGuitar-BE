@@ -70,4 +70,18 @@ public class Lesson extends BaseEntity {
         // NOTYET 이 아니면 이미 확정 처리된 것으로 봄
         return this.attendanceStatus != AttendanceStatus.NOTYET;
     }
+
+    public void makeUp(LocalDateTime makeupStartAt) {
+
+        if (this.attendanceStatus == AttendanceStatus.ATTENDED
+                || this.attendanceStatus == AttendanceStatus.ABSENT) {
+            throw new IllegalStateException("Attendance status already finalized");
+        }
+
+        this.beforeAt = this.startAt;
+        this.startAt = makeupStartAt;
+        this.lessonTag = LessonTag.MAKEUP;
+        this.attendanceStatus = AttendanceStatus.NOTYET;
+    }
+
 }

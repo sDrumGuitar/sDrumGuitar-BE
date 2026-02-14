@@ -4,9 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
-import teamDBMS.sDrumGuitarBE.lesson.dto.LessonAttendanceResponse;
-import teamDBMS.sDrumGuitarBE.lesson.dto.MonthlyLessonsResponse;
-import teamDBMS.sDrumGuitarBE.lesson.dto.UpdateLessonAttendanceRequest;
+import teamDBMS.sDrumGuitarBE.lesson.dto.*;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 import teamDBMS.sDrumGuitarBE.lesson.repository.LessonRepository;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
@@ -152,4 +150,23 @@ public class LessonService {
 
         return LessonAttendanceResponse.from(lesson);
     }
+
+    @Transactional
+    public MakeupLessonResponse makeUpLesson(Long lessonId, MakeupLessonRequest request) {
+
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
+        lesson.makeUp(request.getMakeupStartAt());
+
+        return MakeupLessonResponse.builder()
+                .lessonId(lesson.getId())
+                .attendanceStatus(lesson.getAttendanceStatus())
+                .lessonTag(lesson.getLessonTag())
+                .startAt(lesson.getStartAt())
+                .beforeAt(lesson.getBeforeAt())
+                .updatedAt(lesson.getUpdatedAt())
+                .build();
+    }
+
 }
