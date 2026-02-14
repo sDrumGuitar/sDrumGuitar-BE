@@ -2,10 +2,9 @@ package teamDBMS.sDrumGuitarBE.lesson.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import teamDBMS.sDrumGuitarBE.lesson.dto.LessonAttendanceResponse;
-import teamDBMS.sDrumGuitarBE.lesson.dto.MonthlyLessonsResponse;
-import teamDBMS.sDrumGuitarBE.lesson.dto.UpdateLessonAttendanceRequest;
+import teamDBMS.sDrumGuitarBE.lesson.dto.*;
 import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
 
 @RestController
@@ -30,4 +29,15 @@ public class LessonController {
     ) {
         return lessonService.updateAttendance(lessonId, req);
     }
+
+    @PatchMapping("/{lessonId}/makeup")
+    public ResponseEntity<MakeupLessonResponse> makeUpLesson(
+            @PathVariable("lessonId")  Long lessonId,
+            @Valid @RequestBody MakeupLessonRequest request
+    ) {
+        return ResponseEntity.ok(
+                lessonService.makeUpLesson(lessonId, request)
+        );
+    }
+
 }
