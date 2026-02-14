@@ -24,7 +24,7 @@ public class LessonController {
 
     @PatchMapping("/{lessonId}/attendance")
     public LessonAttendanceResponse updateAttendance(
-            @PathVariable Long lessonId,
+            @PathVariable("lessonId")  Long lessonId,
             @Valid @RequestBody UpdateLessonAttendanceRequest req
     ) {
         return lessonService.updateAttendance(lessonId, req);
