@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.lesson.dto.*;
 import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,5 +42,25 @@ public class LessonController {
                 lessonService.makeUpLesson(lessonId, request)
         );
     }
+
+    @GetMapping("/rollover")
+    public ResponseEntity<RolloverLessonListResponse> getRolloverLessons(
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "month", required = false) Integer month,
+            @RequestParam(value = "studentId", required = false) Long studentId,
+            @RequestParam(value = "classType", required = false) Course.ClassType classType
+    ) {
+
+        List<RolloverLesson> list =
+                lessonService.getRolloverLessons(year, month, studentId, classType);
+
+        return ResponseEntity.ok(
+                new RolloverLessonListResponse(
+                        list.size(),
+                        list
+                )
+        );
+    }
+
 
 }

@@ -203,5 +203,43 @@ public class LessonService {
         return course.getLessonCount() - (int) usedCount;
     }
 
+    @Transactional(readOnly = true)
+    public List<RolloverLesson> getRolloverLessons(
+            Integer year,
+            Integer month,
+            Long studentId,
+            Course.ClassType classType
+    ) {
+
+        List<Lesson> lessons = lessonRepository.findAllRolloverLessons(
+                year, month, studentId, classType
+        );
+
+        return lessons.stream()
+                .map(lesson -> {
+
+                    Course course = lesson.getCourse();
+                    Long sid = course.getStudent().getId();
+
+                    int remaining = remainingLessons(sid);
+
+                    return new RolloverLesson(
+                            lesson.getId(),
+                            sid,
+                            course.getStudent().getName(),
+                            course.getStudent().getParentPhone(),
+                            course.getClassType(),
+                            course.getStatus(),
+                            lesson.getAttendanceStatus(),
+                            lesson.getLessonTag(),
+                            lesson.getBeforeAt(),
+                            remaining,
+                            lesson.getUpdatedAt()
+                    );
+                })
+                .toList();
+    }
+
+
 
 }
