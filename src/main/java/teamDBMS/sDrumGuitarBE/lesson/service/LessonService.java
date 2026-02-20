@@ -4,11 +4,13 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
+import teamDBMS.sDrumGuitarBE.course.repository.CourseRepository;
 import teamDBMS.sDrumGuitarBE.lesson.dto.*;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 import teamDBMS.sDrumGuitarBE.lesson.repository.LessonRepository;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
+import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
+    private final CourseRepository courseRepository;
 
     @Transactional
     public List<Lesson> generateLessons(
@@ -168,5 +171,37 @@ public class LessonService {
                 .updatedAt(lesson.getUpdatedAt())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public int remainingLessons(Long studentId) {
+
+        // 1. 최근 ACTIVE course 조회
+        Course course = courseRepository
+                .findTopByStudentIdAndStatusOrderByCreatedAtDesc(
+                        studentId,
+                        Course.EnrollmentStatus.ACTIVE
+                )
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Active course not found")
+                );
+
+        // 2. 차감 대상 출결 상태
+        List<Lesson.AttendanceStatus> deductedStatuses =
+                List.of(
+                        Lesson.AttendanceStatus.ATTENDED,
+                        Lesson.AttendanceStatus.ABSENT
+                );
+
+        // 3. 사용된 회차 수
+        long usedCount = lessonRepository
+                .countByCourseIdAndAttendanceStatusIn(
+                        course.getId(),
+                        deductedStatuses
+                );
+
+        // 4. 남은 회차 계산
+        return course.getLessonCount() - (int) usedCount;
+    }
+
 
 }
