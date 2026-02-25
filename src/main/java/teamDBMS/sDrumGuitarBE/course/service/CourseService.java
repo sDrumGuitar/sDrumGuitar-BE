@@ -3,6 +3,7 @@ package teamDBMS.sDrumGuitarBE.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamDBMS.sDrumGuitarBE.course.dto.AllCourseResponse;
 import teamDBMS.sDrumGuitarBE.course.dto.CreateCourseRequest;
 import teamDBMS.sDrumGuitarBE.course.dto.CourseResponse;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
@@ -65,6 +66,14 @@ public class CourseService {
 
         // 5) Response 반환
         return CourseResponse.from(course, schedules, invoice);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AllCourseResponse> getAllCourses() {
+        return courseRepository.findAll()
+                .stream()
+                .map(AllCourseResponse::from)
+                .toList();
     }
 }
 
