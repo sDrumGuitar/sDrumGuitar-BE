@@ -65,7 +65,7 @@ AND (:month IS NULL OR FUNCTION('MONTH', l.startAt) = :month)
             @Param("classType") Course.ClassType classType
     );
 
-
+    boolean existsByOriginLessonId(Long originLessonId);
 
 
 }
