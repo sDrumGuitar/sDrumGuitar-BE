@@ -240,6 +240,62 @@ public class LessonService {
                 .toList();
     }
 
+    @Transactional
+    public CreateRolloverLessonResponse createRolloverLesson(
+            Long lessonId,
+            CreateRolloverLessonRequest request
+    ) {
+
+        Lesson origin = lessonRepository.findById(lessonId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Lesson not found")
+                );
+
+        // 1️⃣ 이월 상태 체크
+        if (origin.getAttendanceStatus() != Lesson.AttendanceStatus.ROLLOVER
+                || origin.getLessonTag() != Lesson.LessonTag.NORMAL) {
+            throw new IllegalStateException(
+                    "Only rollover lessons can create a rollover session"
+            );
+        }
+
+        // 2️⃣ 이미 후속 일정 있는지 체크
+        if (lessonRepository.existsByOriginLessonId(origin.getId())) {
+            throw new IllegalStateException(
+                    "Rollover lesson already has a follow-up session"
+            );
+        }
+
+        // 3️⃣ 기존 lesson 상태 변경
+        origin.markAsRolloverConfirmed();
+
+        // 4️⃣ 새 lesson 생성
+        Lesson newLesson = Lesson.builder()
+                .course(origin.getCourse())
+                .startAt(request.getStartAt())
+                .beforeAt(origin.getStartAt())
+                .lessonTag(Lesson.LessonTag.NORMAL)
+                .attendanceStatus(Lesson.AttendanceStatus.NOTYET)
+                .originLesson(origin)
+                .build();
+
+        lessonRepository.save(newLesson);
+
+        return new CreateRolloverLessonResponse(
+                new CreateRolloverLessonResponse.OriginLesson(
+                        origin.getId(),
+                        origin.getLessonTag(),
+                        origin.getAttendanceStatus()
+                ),
+                new CreateRolloverLessonResponse.NewLesson(
+                        newLesson.getId(),
+                        newLesson.getLessonTag(),
+                        newLesson.getAttendanceStatus(),
+                        newLesson.getStartAt(),
+                        newLesson.getBeforeAt()
+                )
+        );
+    }
 
 
 }
