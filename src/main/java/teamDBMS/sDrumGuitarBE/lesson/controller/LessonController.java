@@ -62,5 +62,14 @@ public class LessonController {
         );
     }
 
+    @PostMapping("/{lessonId}/rollover")
+    public ResponseEntity<CreateRolloverLessonResponse> createRolloverLesson(
+            @PathVariable("lessonId") Long lessonId,
+            @Valid @RequestBody CreateRolloverLessonRequest request
+    ) {
+        return ResponseEntity.ok(
+                lessonService.createRolloverLesson(lessonId, request)
+        );
+    }
 
 }
