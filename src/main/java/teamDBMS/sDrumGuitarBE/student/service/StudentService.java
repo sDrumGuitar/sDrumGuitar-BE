@@ -74,8 +74,7 @@ public class StudentService {
                 .map(student -> new StudentInfoResponse(
                 student.getId(),
                 student.getName(),
-                student.getPhone(),
-                lessonService.remainingLessons(student.getId()))
+                student.getPhone())
         ).toList();
     }
 
