@@ -1,5 +1,6 @@
 package teamDBMS.sDrumGuitarBE.student.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class CreateStudentRequest {
     private String memo;
 
     @AssertTrue(message = "phone or parent_phone is required")
+    @JsonIgnore
     public boolean isPhoneOrParentPhonePresent() {
         boolean hasPhone = phone != null && !phone.isBlank();
         boolean hasParent = parentPhone != null && !parentPhone.isBlank();
