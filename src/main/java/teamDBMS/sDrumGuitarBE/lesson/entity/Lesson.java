@@ -26,25 +26,21 @@ public class Lesson extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime startAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LessonTag lessonTag = LessonTag.NORMAL;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AttendanceStatus attendanceStatus = AttendanceStatus.NOTYET;
 
     private LocalDateTime beforeAt;
 
-    @PrePersist
-    private void prePersist() {
-        if (lessonTag == null) {
-            lessonTag = LessonTag.NORMAL;
-        }
-        if (attendanceStatus == null) {
-            attendanceStatus = AttendanceStatus.NOTYET;
-        }
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_lesson_id")
+    private Lesson originLesson;
 
     public enum LessonTag {
         NORMAL, MAKEUP, ROLLOVER
@@ -82,6 +78,11 @@ public class Lesson extends BaseEntity {
         this.startAt = makeupStartAt;
         this.lessonTag = LessonTag.MAKEUP;
         this.attendanceStatus = AttendanceStatus.NOTYET;
+    }
+
+    public void markAsRolloverConfirmed() {
+        this.lessonTag = LessonTag.ROLLOVER;
+        this.attendanceStatus = AttendanceStatus.ROLLOVER;
     }
 
 }
