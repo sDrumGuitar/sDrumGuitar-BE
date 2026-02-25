@@ -1,28 +1,29 @@
 package teamDBMS.sDrumGuitarBE.student.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
 import teamDBMS.sDrumGuitarBE.student.dto.CreateStudentRequest;
 import teamDBMS.sDrumGuitarBE.student.dto.EveryStudent;
+import teamDBMS.sDrumGuitarBE.student.dto.StudentInfoResponse;
 import teamDBMS.sDrumGuitarBE.student.dto.StudentResponse;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 import teamDBMS.sDrumGuitarBE.student.exception.StudentNotFoundException;
 import teamDBMS.sDrumGuitarBE.student.repository.StudentRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final LessonService lessonService;
 
     @Transactional
     public StudentResponse create(CreateStudentRequest request) {
@@ -55,6 +56,27 @@ public class StudentService {
                 .orElseThrow(() -> new StudentNotFoundException(studentId));
 
         return StudentResponse.from(student);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentInfoResponse> getStudentInfo(String name) {
+
+        List<Student> students = studentRepository.findByName(name);
+
+        if (students.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "학생을 찾을 수 없습니다."
+            );
+        }
+
+        return students.stream()
+                .map(student -> new StudentInfoResponse(
+                student.getId(),
+                student.getName(),
+                student.getPhone(),
+                lessonService.remainingLessons(student.getId()))
+        ).toList();
     }
 
 

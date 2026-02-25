@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import teamDBMS.sDrumGuitarBE.student.dto.CreateStudentRequest;
 import teamDBMS.sDrumGuitarBE.student.dto.EveryStudent;
+import teamDBMS.sDrumGuitarBE.student.dto.StudentInfoResponse;
 import teamDBMS.sDrumGuitarBE.student.dto.StudentResponse;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 import teamDBMS.sDrumGuitarBE.student.service.StudentService;
@@ -51,6 +52,15 @@ public class StudentController {
     @GetMapping("/{studentId}")
     public ResponseEntity<StudentResponse> getStudent(@PathVariable Long studentId) {
         return ResponseEntity.ok(studentService.getStudent(studentId));
+    }
+
+    @GetMapping("/studentsInfo")
+    public ResponseEntity<List<StudentInfoResponse>> getStudentInfo(
+            @RequestParam(value = "name")String name
+    ) {
+        return ResponseEntity.ok(
+                studentService.getStudentInfo(name)
+        );
     }
 
 }
