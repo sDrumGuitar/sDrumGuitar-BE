@@ -22,6 +22,7 @@ public class RolloverLesson {
     private Lesson.AttendanceStatus attendanceStatus;
     private Lesson.LessonTag lessonTag;
 
+    private LocalDateTime startAt;
     private LocalDateTime beforeAt;
     private int remainingLessons;
     private LocalDateTime updatedAt;

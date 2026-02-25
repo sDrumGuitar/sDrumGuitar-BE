@@ -35,6 +35,7 @@ SELECT new teamDBMS.sDrumGuitarBE.lesson.dto.RolloverLesson(
     l.attendanceStatus,
     l.lessonTag,
     l.beforeAt,
+    l.startAt,
     0,
     l.updatedAt
 )

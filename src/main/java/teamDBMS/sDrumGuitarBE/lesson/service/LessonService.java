@@ -232,6 +232,7 @@ public class LessonService {
                             course.getStatus(),
                             lesson.getAttendanceStatus(),
                             lesson.getLessonTag(),
+                            lesson.getStartAt(),
                             lesson.getBeforeAt(),
                             remaining,
                             lesson.getUpdatedAt()
