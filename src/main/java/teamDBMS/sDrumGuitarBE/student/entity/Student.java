@@ -28,7 +28,7 @@ public class Student extends BaseEntity{
 
     @Column(nullable = false)
     @Builder.Default
-    private boolean familyDiscount = false;
+    private Boolean familyDiscount = false;
 
     @Lob
     private String memo;
