@@ -1,11 +1,11 @@
 package teamDBMS.sDrumGuitarBE.invoice.Controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceUpdateRequest;
+import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceUpdateResponse;
 import teamDBMS.sDrumGuitarBE.invoice.dto.StudentInvoiceListResponse;
 import teamDBMS.sDrumGuitarBE.invoice.service.InvoiceService;
 
@@ -22,6 +22,16 @@ public class InvoiceController {
     ) {
         return ResponseEntity.ok(
                 invoiceService.getStudentInvoices(studentId)
+        );
+    }
+
+    @PatchMapping("/{invoiceId}")
+    public ResponseEntity<InvoiceUpdateResponse> updateInvoice(
+            @PathVariable Long invoiceId,
+            @RequestBody @Valid InvoiceUpdateRequest request
+    ) {
+        return ResponseEntity.ok(
+                invoiceService.updateInvoice(invoiceId, request)
         );
     }
 }
