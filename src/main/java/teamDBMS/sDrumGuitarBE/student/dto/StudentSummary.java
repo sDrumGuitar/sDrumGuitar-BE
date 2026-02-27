@@ -1,45 +1,27 @@
 package teamDBMS.sDrumGuitarBE.student.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
-public class StudentResponse {
-
+@AllArgsConstructor
+public class StudentSummary {
     private Long studentId;
-
     private String name;
-
     private String ageGroup;
-
     private String phone;
-
     private String parentPhone;
 
-    private String memo;
-
-    private boolean familyDiscount;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    public static StudentResponse from(Student student) {
-        return StudentResponse.builder()
+    public static StudentSummary from(Student student) {
+        return StudentSummary.builder()
                 .studentId(student.getId())
                 .name(student.getName())
                 .ageGroup(student.getAgeGroup().name())
                 .phone(student.getPhone())
                 .parentPhone(student.getParentPhone())
-                .memo(student.getMemo())
-                .familyDiscount(student.getFamilyDiscount())
-                .createdAt(student.getCreatedAt())
-                .updatedAt(student.getUpdatedAt())
                 .build();
     }
 }

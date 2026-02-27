@@ -1,6 +1,5 @@
 package teamDBMS.sDrumGuitarBE.invoice.service;
 
-import jakarta.persistence.PrePersist;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class InvoiceSerive {
+public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final StudentRepository studentRepository;
 
@@ -41,50 +40,60 @@ public class InvoiceSerive {
 
     public StudentInvoiceListResponse getStudentInvoices(Long studentId) {
 
-        // 1️⃣ 학생 존재 확인
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found")
                 );
 
-        // 2️⃣ 청구서 조회 (최신순)
+        Boolean familyDiscount = student.getFamilyDiscount();
+
         List<Invoice> invoices =
                 invoiceRepository.findByStudentIdOrderByIssuedAtDesc(studentId);
 
-        // 3️⃣ DTO 변환
         List<StudentInvoiceItem> items = invoices.stream()
-                .map(invoice -> StudentInvoiceItem.builder()
-                        .invoiceId(invoice.getId())
-                        .enrollmentId(invoice.getCourse().getId())
-                        .issuedAt(invoice.getIssuedAt())
-                        .paidAt(invoice.getPaidAt())
-                        .status(invoice.getStatus().name().toLowerCase())
-                        .method(invoice.getMethod() != null
-                                ? invoice.getMethod().name().toLowerCase()
-                                : null)
-                        .lessonCount(invoice.getCourse().getLessonCount())
-                        .familyDiscount(student.getFamilyDiscount())
-                        .classType(invoice.getCourse().getClassType().name())
-                        .totalAmount(
-                                invoice.getTotalAmount() != null
-                                        ? invoice.getTotalAmount()
-                                        : calculateAmount(invoice)
-                        )
-                        .build()
-                )
+                .map(invoice -> {
+
+                    Course course = invoice.getCourse();
+
+                    Integer lessonCount = course.getLessonCount();
+                    String classType = course.getClassType().name();
+
+                    return StudentInvoiceItem.builder()
+                            .invoiceId(invoice.getId())
+                            .enrollmentId(course.getId())
+                            .issuedAt(invoice.getIssuedAt())
+                            .paidAt(invoice.getPaidAt())
+                            .status(invoice.getStatus().name().toLowerCase())
+                            .method(invoice.getMethod() != null
+                                    ? invoice.getMethod().name().toLowerCase()
+                                    : null)
+                            .lessonCount(lessonCount)
+                            .familyDiscount(familyDiscount)
+                            .classType(classType)
+                            .totalAmount(
+                                    calculateAmount(lessonCount, familyDiscount)
+                            )
+                            .build();
+                })
                 .toList();
 
         return new StudentInvoiceListResponse(studentId, items);
     }
 
-    private Integer calculateAmount(Invoice invoice) {
-        // 정책 예시
-        int base = invoice.getCourse().getLessonCount() * 50000;
+    private Integer calculateAmount(Integer lessonCount, Boolean familyDiscount) {
 
-        if (invoice.getStudent().getFamilyDiscount()) {
-            return (int) (base * 0.9);
+        int amount = switch (lessonCount) {
+            case 4 -> amount = 110_000;
+            case 8 -> amount = 210_000;
+            case 12 -> amount = 310_000;
+            default -> throw new IllegalArgumentException("잘못된 회차 정책입니다.");
+        };
+
+        if (Boolean.TRUE.equals(familyDiscount)) {
+            amount -= 10_000;
         }
-        return base;
+
+        return amount;
     }
 
 
