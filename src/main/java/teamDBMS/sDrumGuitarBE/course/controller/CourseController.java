@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import teamDBMS.sDrumGuitarBE.course.dto.AllCourseResponse;
+import teamDBMS.sDrumGuitarBE.course.dto.CoursePageResponse;
 import teamDBMS.sDrumGuitarBE.course.dto.CreateCourseRequest;
 import teamDBMS.sDrumGuitarBE.course.dto.CourseResponse;
+import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.course.service.CourseService;
 
 import java.util.List;
@@ -26,7 +28,17 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AllCourseResponse>> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+    public ResponseEntity<CoursePageResponse> getAllCourses(
+            @RequestParam(required = false) Course.EnrollmentStatus status,
+            @RequestParam(required = false) Course.ClassType classType,
+            @RequestParam(required = false) String studentName,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(
+                courseService.getCourses(status, classType, studentName, year, month, page, size)
+        );
     }
 }

@@ -1,21 +1,23 @@
 package teamDBMS.sDrumGuitarBE.course.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamDBMS.sDrumGuitarBE.course.dto.AllCourseResponse;
+import teamDBMS.sDrumGuitarBE.course.dto.CoursePageResponse;
 import teamDBMS.sDrumGuitarBE.course.dto.CreateCourseRequest;
 import teamDBMS.sDrumGuitarBE.course.dto.CourseResponse;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.course.repository.CourseRepository;
+import teamDBMS.sDrumGuitarBE.course.repository.CourseSpecification;
 import teamDBMS.sDrumGuitarBE.invoice.dto.CreateInvoiceRequest;
-import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceResponse;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
-import teamDBMS.sDrumGuitarBE.invoice.service.InvoiceSerive;
+import teamDBMS.sDrumGuitarBE.invoice.service.InvoiceService;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 import teamDBMS.sDrumGuitarBE.lesson.repository.LessonRepository;
 import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
-import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleResponse;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 import teamDBMS.sDrumGuitarBE.schedule.service.ScheduleService;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
@@ -29,7 +31,7 @@ public class CourseService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
-    private final InvoiceSerive invoiceService;
+    private final InvoiceService invoiceService;
     private final LessonRepository lessonRepository;
 
     private final ScheduleService scheduleService;
@@ -69,11 +71,34 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public List<AllCourseResponse> getAllCourses() {
-        return courseRepository.findAll()
-                .stream()
-                .map(AllCourseResponse::from)
-                .toList();
+    public CoursePageResponse getCourses(
+            Course.EnrollmentStatus status,
+            Course.ClassType classType,
+            String studentName,
+            Integer year,
+            Integer month,
+            int page,
+            int size
+    ) {
+
+        PageRequest pageable = PageRequest.of(page - 1, size);
+
+        Page<Course> result = courseRepository.findAll(
+                CourseSpecification.filter(status, classType, studentName, year, month),
+                pageable
+        );
+
+        return CoursePageResponse.builder()
+                .totalCount(result.getTotalElements())
+                .page(page)
+                .size(size)
+                .courses(
+                        result.getContent()
+                                .stream()
+                                .map(AllCourseResponse::from)
+                                .toList()
+                )
+                .build();
     }
 }
 

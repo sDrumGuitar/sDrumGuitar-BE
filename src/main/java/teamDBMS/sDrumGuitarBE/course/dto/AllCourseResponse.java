@@ -4,8 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
+import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceSummary;
+import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleResponse;
+import teamDBMS.sDrumGuitarBE.student.dto.StudentSummary;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -13,22 +18,34 @@ import java.time.LocalDate;
 public class AllCourseResponse {
 
     private Long courseId;
-    private Long studentId;
-    private String studentName;
-    private Course.ClassType classType;
+    private StudentSummary student;
+    private String classType;
     private LocalDate startDate;
-    private Course.EnrollmentStatus status;
+    private String status;
     private int lessonCount;
+    private List<ScheduleResponse> schedules;
+    private InvoiceSummary invoice;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     public static AllCourseResponse from(Course course) {
         return AllCourseResponse.builder()
                 .courseId(course.getId())
-                .studentId(course.getStudent().getId())
-                .studentName(course.getStudent().getName())
-                .classType(course.getClassType())
+                .student(StudentSummary.from(course.getStudent()))
+                .classType(course.getClassType().name())
                 .startDate(course.getStartDate())
-                .status(course.getStatus())
+                .status(course.getStatus().name())
                 .lessonCount(course.getLessonCount())
+                .schedules(
+                        course.getSchedules()
+                                .stream()
+                                .map(ScheduleResponse::from)
+                                .toList()
+                )
+                .invoice(InvoiceSummary.from(course.getInvoice()))
+                .createdAt(course.getCreatedAt())
+                .updatedAt(course.getUpdatedAt())
                 .build();
     }
 }

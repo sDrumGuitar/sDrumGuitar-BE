@@ -6,10 +6,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
+import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
+import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,7 +44,13 @@ public class Course extends BaseEntity {
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
 
     @Column(nullable = false)
-    private int lessonCount;
+    private Integer lessonCount;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToOne(mappedBy = "course", fetch = FetchType.LAZY)
+    private Invoice invoice;
 
     public enum ClassType {
         DRUM, GUITAR
