@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,7 +28,7 @@ public class CreateRolloverLessonResponse {
         private Long lessonId;
         private Lesson.LessonTag lessonTag;
         private Lesson.AttendanceStatus attendanceStatus;
-        private LocalDateTime startAt;
-        private LocalDateTime beforeAt;
+        private Instant startAt;
+        private Instant beforeAt;
     }
 }

@@ -8,6 +8,7 @@ import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceSummary;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleResponse;
 import teamDBMS.sDrumGuitarBE.student.dto.StudentSummary;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +26,8 @@ public class AllCourseResponse {
     private int lessonCount;
     private List<ScheduleResponse> schedules;
     private InvoiceSummary invoice;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
 
     public static AllCourseResponse from(Course course) {

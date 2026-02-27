@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -25,9 +25,9 @@ public class StudentResponse {
 
     private boolean familyDiscount;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     public static StudentResponse from(Student student) {
         return StudentResponse.builder()

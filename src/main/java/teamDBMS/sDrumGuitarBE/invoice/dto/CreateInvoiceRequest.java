@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +20,7 @@ public class CreateInvoiceRequest {
     private Invoice.PaymentMethod method; // CARD / CASH (optional)
 
     @JsonProperty("paid_at")
-    private LocalDateTime paidAt; // "2026-09-28T14:10:00"
+    private Instant paidAt; // "2026-09-28T14:10:00"
 
     public void validate() {
         if (status == null) throw new IllegalArgumentException("status is required");

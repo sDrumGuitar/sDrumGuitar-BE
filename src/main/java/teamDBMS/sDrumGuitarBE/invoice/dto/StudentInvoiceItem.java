@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,8 +15,8 @@ public class StudentInvoiceItem {
     private Long invoiceId;
     private Long enrollmentId;
 
-    private LocalDateTime issuedAt;
-    private LocalDateTime paidAt;
+    private Instant issuedAt;
+    private Instant paidAt;
 
     private String status;
     private String method;

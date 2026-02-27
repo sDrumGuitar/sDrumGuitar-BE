@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -21,13 +21,13 @@ public class LessonAttendanceResponse {
     private String lessonTag;
 
     @JsonProperty("start_at")
-    private LocalDateTime startAt;
+    private Instant startAt;
 
     @JsonProperty("before_at")
-    private LocalDateTime beforeAt;
+    private Instant beforeAt;
 
     @JsonProperty("updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     public static LessonAttendanceResponse from(Lesson lesson) {
         return LessonAttendanceResponse.builder()

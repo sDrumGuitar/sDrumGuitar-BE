@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +20,7 @@ public class InvoiceResponse {
     private Invoice.PaymentMethod method;
 
     @JsonProperty("paid_at")
-    private LocalDateTime paidAt;
+    private Instant paidAt;
 
     @JsonProperty("course_id")
     private Long courseId;

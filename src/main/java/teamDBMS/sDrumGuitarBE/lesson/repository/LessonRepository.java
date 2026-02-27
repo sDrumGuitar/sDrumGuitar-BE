@@ -8,6 +8,7 @@ import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.lesson.dto.RolloverLesson;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,37 +16,14 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @EntityGraph(attributePaths = {"course", "course.student"})
     List<Lesson> findAllByStartAtGreaterThanEqualAndStartAtLessThan(
-            LocalDateTime from,
-            LocalDateTime to
+            Instant from,
+            Instant to
     );
 
     long countByCourseIdAndAttendanceStatusIn(
             Long courseId,
             List<Lesson.AttendanceStatus> statuses
     );
-
-    @Query("""
-SELECT new teamDBMS.sDrumGuitarBE.lesson.dto.RolloverLesson(
-    l.id,
-    s.id,
-    s.name,
-    s.parentPhone,
-    c.classType,
-    c.status,
-    l.attendanceStatus,
-    l.lessonTag,
-    l.beforeAt,
-    l.startAt,
-    0,
-    l.updatedAt
-)
-FROM Lesson l
-JOIN l.course c
-JOIN c.student s
-WHERE l.attendanceStatus = teamDBMS.sDrumGuitarBE.lesson.entity.Lesson.AttendanceStatus.ROLLOVER
-AND l.lessonTag = teamDBMS.sDrumGuitarBE.lesson.entity.Lesson.LessonTag.NORMAL
-""")
-    List<RolloverLesson> findRolloverLessons();
 
     @Query("""
 SELECT l
@@ -56,12 +34,12 @@ WHERE l.attendanceStatus = 'ROLLOVER'
 AND l.lessonTag = 'NORMAL'
 AND (:studentId IS NULL OR s.id = :studentId)
 AND (:classType IS NULL OR c.classType = :classType)
-AND (:year IS NULL OR FUNCTION('YEAR', l.startAt) = :year)
-AND (:month IS NULL OR FUNCTION('MONTH', l.startAt) = :month)
+AND (:from IS NULL OR l.startAt >= :from)
+AND (:to IS NULL OR l.startAt < :to)
 """)
     List<Lesson> findAllRolloverLessons(
-            @Param("year") Integer year,
-            @Param("month") Integer month,
+            @Param("from") Instant from,
+            @Param("to") Instant to,
             @Param("studentId") Long studentId,
             @Param("classType") Course.ClassType classType
     );

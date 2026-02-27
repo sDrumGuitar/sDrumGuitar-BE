@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Invoice {
+public class Invoice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +36,10 @@ public class Invoice {
     // 생성일(issued_at)
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime issuedAt;
+    private Instant issuedAt;
 
     // 결제일(paid_at)
-    private LocalDateTime paidAt;
+    private Instant paidAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -58,5 +60,11 @@ public class Invoice {
 
     public enum PaymentMethod {
         CARD, CASH
+    }
+
+    public void markPaid(Invoice.PaymentMethod method, Instant paidAt) {
+        this.status = Invoice.InvoiceStatus.PAID;
+        this.method = method;
+        this.paidAt = paidAt;
     }
 }

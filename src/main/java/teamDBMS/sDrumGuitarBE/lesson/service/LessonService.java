@@ -14,10 +14,7 @@ import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,22 +30,29 @@ public class LessonService {
             LocalDate startDate,
             int lessonCount,
             List<ScheduleRequest> schedules) {
-        record Slot(LocalDateTime dateTime, Schedule.Weekday weekday, LocalTime time) {}
 
-        PriorityQueue<Slot> pq = new PriorityQueue<>(Comparator.comparing(Slot::dateTime));
+        ZoneId zone = ZoneId.of("Asia/Seoul");
 
-        // 각 스케줄별 "첫 번째 발생" 계산해서 PQ에 넣기
+        record Slot(ZonedDateTime dateTime,
+                    Schedule.Weekday weekday,
+                    LocalTime time) {}
+
+        PriorityQueue<Slot> pq =
+                new PriorityQueue<>(Comparator.comparing(Slot::dateTime));
+
+        // 첫 발생 계산
         for (ScheduleRequest s : schedules) {
             DayOfWeek dow = toDayOfWeek(s.getWeekday());
 
             LocalDate firstDate = startDate.with(TemporalAdjusters.nextOrSame(dow));
-            LocalDateTime firstDateTime = LocalDateTime.of(firstDate, s.getTime());
+
+            ZonedDateTime firstDateTime =
+                    ZonedDateTime.of(firstDate, s.getTime(), zone);
 
             pq.add(new Slot(firstDateTime, s.getWeekday(), s.getTime()));
         }
 
-        // PQ에서 가장 빠른 것부터 꺼내며 lessonCount개 채우기
-        List<Lesson> result = new java.util.ArrayList<>(lessonCount);
+        List<Lesson> result = new ArrayList<>(lessonCount);
 
         for (int i = 0; i < lessonCount; i++) {
             Slot cur = pq.poll();
@@ -56,14 +60,17 @@ public class LessonService {
 
             result.add(Lesson.builder()
                     .course(course)
-                    .startAt(cur.dateTime())
-                    // lessonTag/attendanceStatus/beforeAt은 엔티티 @PrePersist로 기본값/세팅
+                    .startAt(cur.dateTime().toInstant())  // 🔥 UTC 변환
                     .build()
             );
 
-            // 다음 주 같은 요일/시간으로 다시 넣기
-            pq.add(new Slot(cur.dateTime().plusWeeks(1), cur.weekday(), cur.time()));
+            pq.add(new Slot(
+                    cur.dateTime().plusWeeks(1),
+                    cur.weekday(),
+                    cur.time()
+            ));
         }
+
         return result;
     }
 
@@ -78,33 +85,42 @@ public class LessonService {
             case SUN -> DayOfWeek.SUNDAY;
         };
     }
-
     @Transactional(readOnly = true)
     public MonthlyLessonsResponse getMonthlyLessons(int year, int month) {
 
+        ZoneId zone = ZoneId.of("Asia/Seoul");
+
         YearMonth ym = YearMonth.of(year, month);
 
-        // [monthStart, nextMonthStart)
-        LocalDateTime from = ym.atDay(1).atStartOfDay();
-        LocalDateTime to = ym.plusMonths(1).atDay(1).atStartOfDay();
+        // KST 기준 월 시작/끝
+        ZonedDateTime monthStartKst = ym.atDay(1).atStartOfDay(zone);
+        ZonedDateTime nextMonthStartKst = ym.plusMonths(1).atDay(1).atStartOfDay(zone);
 
-        // beforeAt 기준으로 월에 속하는 lesson 조회
-        List<Lesson> lessons = lessonRepository
-                .findAllByStartAtGreaterThanEqualAndStartAtLessThan(from, to);
+        // UTC Instant로 변환
+        Instant from = monthStartKst.toInstant();
+        Instant to = nextMonthStartKst.toInstant();
 
+        List<Lesson> lessons =
+                lessonRepository.findAllByStartAtGreaterThanEqualAndStartAtLessThan(from, to);
+
+        // 그룹핑도 KST 기준 날짜로 해야 함
         Map<LocalDate, List<Lesson>> grouped = lessons.stream()
-                .collect(Collectors.groupingBy(l -> l.getStartAt().toLocalDate()));
+                .collect(Collectors.groupingBy(l ->
+                        l.getStartAt()
+                                .atZone(zone)
+                                .toLocalDate()
+                ));
 
-
-        // date 오름차순 정렬 + 각 date 내부 lessons도 시간순 정렬(원하면 startAt 기준)
         List<MonthlyLessonsResponse.DayLessons> days = grouped.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> {
                     LocalDate date = e.getKey();
-                    List<MonthlyLessonsResponse.LessonItem> items = e.getValue().stream()
-                            .sorted(Comparator.comparing(Lesson::getStartAt)) // 실제 수업시간 순
-                            .map(this::toItem)
-                            .toList();
+
+                    List<MonthlyLessonsResponse.LessonItem> items =
+                            e.getValue().stream()
+                                    .sorted(Comparator.comparing(Lesson::getStartAt))
+                                    .map(this::toItem)
+                                    .toList();
 
                     return MonthlyLessonsResponse.DayLessons.builder()
                             .date(date)
@@ -119,7 +135,6 @@ public class LessonService {
                 .days(days)
                 .build();
     }
-
     private MonthlyLessonsResponse.LessonItem toItem(Lesson l) {
         return MonthlyLessonsResponse.LessonItem.builder()
                 .lessonId(l.getId())
@@ -211,8 +226,20 @@ public class LessonService {
             Course.ClassType classType
     ) {
 
+        ZoneId zone = ZoneId.of("Asia/Seoul");
+
+        Instant from = null;
+        Instant to = null;
+
+        if (year != null && month != null) {
+            YearMonth ym = YearMonth.of(year, month);
+
+            from = ym.atDay(1).atStartOfDay(zone).toInstant();
+            to = ym.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant();
+        }
+
         List<Lesson> lessons = lessonRepository.findAllRolloverLessons(
-                year, month, studentId, classType
+                from, to, studentId, classType
         );
 
         return lessons.stream()

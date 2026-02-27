@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @NoArgsConstructor
@@ -15,5 +15,5 @@ public class MakeupLessonRequest {
 
     @NotNull(message = "makeup_start_at is required")
     @JsonProperty("makeup_start_at")
-    private LocalDateTime makeupStartAt;
+    private Instant makeupStartAt;
 }

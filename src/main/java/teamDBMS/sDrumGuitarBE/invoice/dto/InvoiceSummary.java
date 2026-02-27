@@ -6,6 +6,7 @@ import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +16,7 @@ public class InvoiceSummary {
     private Long invoiceId;
     private String method;
     private String status;
-    private LocalDateTime paidAt;
+    private Instant paidAt;
 
     public static InvoiceSummary from(Invoice invoice) {
         if (invoice == null) return null;

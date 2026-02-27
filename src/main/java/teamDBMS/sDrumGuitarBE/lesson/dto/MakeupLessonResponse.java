@@ -5,6 +5,7 @@ import lombok.Getter;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson.AttendanceStatus;
 import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson.LessonTag;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +15,7 @@ public class MakeupLessonResponse {
     private Long lessonId;
     private AttendanceStatus attendanceStatus;
     private LessonTag lessonTag;
-    private LocalDateTime startAt;
-    private LocalDateTime beforeAt;
-    private LocalDateTime updatedAt;
+    private Instant startAt;
+    private Instant beforeAt;
+    private Instant updatedAt;
 }

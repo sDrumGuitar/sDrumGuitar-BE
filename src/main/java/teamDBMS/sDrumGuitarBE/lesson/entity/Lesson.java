@@ -6,6 +6,7 @@ import org.hibernate.annotations.Comment;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,7 +25,7 @@ public class Lesson extends BaseEntity {
     private Course course;
 
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private Instant startAt;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -36,7 +37,7 @@ public class Lesson extends BaseEntity {
     @Column(nullable = false)
     private AttendanceStatus attendanceStatus = AttendanceStatus.NOTYET;
 
-    private LocalDateTime beforeAt;
+    private Instant beforeAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_lesson_id")
@@ -67,7 +68,7 @@ public class Lesson extends BaseEntity {
         return this.attendanceStatus != AttendanceStatus.NOTYET;
     }
 
-    public void makeUp(LocalDateTime makeupStartAt) {
+    public void makeUp(Instant makeupStartAt) {
 
         if (this.attendanceStatus == AttendanceStatus.ATTENDED
                 || this.attendanceStatus == AttendanceStatus.ABSENT) {
