@@ -1,4 +1,4 @@
-package teamDBMS.sDrumGuitarBE.Message.Entity;
+package teamDBMS.sDrumGuitarBE.message.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 
-import java.awt.*;
 import java.time.Instant;
 
 @Entity

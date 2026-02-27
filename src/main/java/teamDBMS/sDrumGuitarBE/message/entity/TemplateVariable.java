@@ -1,4 +1,4 @@
-package teamDBMS.sDrumGuitarBE.Message.Entity;
+package teamDBMS.sDrumGuitarBE.message.entity;
 
 public enum TemplateVariable {
 
