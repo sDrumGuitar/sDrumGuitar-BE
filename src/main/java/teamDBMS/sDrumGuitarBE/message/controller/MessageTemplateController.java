@@ -6,10 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import teamDBMS.sDrumGuitarBE.message.dto.CreateMessageTemplateRequest;
 import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateResponse;
+import teamDBMS.sDrumGuitarBE.message.dto.TemplateVariableResponse;
+import teamDBMS.sDrumGuitarBE.message.entity.TemplateVariable;
 import teamDBMS.sDrumGuitarBE.message.service.MessageTemplateService;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/messages_templates")
+@RequestMapping("/api/messages/templates")
 @RequiredArgsConstructor
 public class MessageTemplateController {
 
@@ -20,5 +25,12 @@ public class MessageTemplateController {
             @Valid @RequestBody CreateMessageTemplateRequest request
     ) {
         return ResponseEntity.ok(service.create(request));
+    }
+
+    @GetMapping("/variables")
+    public List<TemplateVariableResponse> getVariables() {
+        return Arrays.stream(TemplateVariable.values())
+                .map(TemplateVariableResponse::from)
+                .toList();
     }
 }
