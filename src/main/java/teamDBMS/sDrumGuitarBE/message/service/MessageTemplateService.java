@@ -1,14 +1,19 @@
 package teamDBMS.sDrumGuitarBE.message.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateListResponse;
 import teamDBMS.sDrumGuitarBE.message.entity.MessageTemplate;
 import teamDBMS.sDrumGuitarBE.message.dto.CreateMessageTemplateRequest;
 import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateResponse;
+import teamDBMS.sDrumGuitarBE.message.entity.MessageType;
 import teamDBMS.sDrumGuitarBE.message.repository.MessageTemplateRepository;
 
 import java.util.List;
@@ -54,4 +59,18 @@ public class MessageTemplateService {
                 templates
         );
     }
+
+    public MessageTemplateResponse getTemplateByType(MessageType type) {
+
+        MessageTemplate template = messageTemplateRepository.findByType(type)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Message template not found"
+                        )
+                );
+
+        return MessageTemplateResponse.from(template);
+    }
+
 }

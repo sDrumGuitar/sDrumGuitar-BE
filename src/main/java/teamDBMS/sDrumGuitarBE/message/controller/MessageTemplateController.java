@@ -2,12 +2,15 @@ package teamDBMS.sDrumGuitarBE.message.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import teamDBMS.sDrumGuitarBE.message.dto.CreateMessageTemplateRequest;
 import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateListResponse;
 import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateResponse;
 import teamDBMS.sDrumGuitarBE.message.dto.TemplateVariableResponse;
+import teamDBMS.sDrumGuitarBE.message.entity.MessageType;
 import teamDBMS.sDrumGuitarBE.message.entity.TemplateVariable;
 import teamDBMS.sDrumGuitarBE.message.service.MessageTemplateService;
 
@@ -45,4 +48,14 @@ public class MessageTemplateController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{type}")
+    public ResponseEntity<MessageTemplateResponse> getTemplate(
+            @PathVariable MessageType type
+    ) {
+        return ResponseEntity.ok(
+                messageTemplateService.getTemplateByType(type)
+        );
+    }
+
 }
