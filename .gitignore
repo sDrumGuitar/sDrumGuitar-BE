@@ -1,9 +1,16 @@
 caches/
+
 daemon/
+daemon/*
+**/daemon/
+**/*.log
+
 native/
 wrapper/
 .gradle/
 
+.idea/
+*.iml
 /src/main/resources/application.yaml
 /src/main/resources/application.yml
 HELP.md
