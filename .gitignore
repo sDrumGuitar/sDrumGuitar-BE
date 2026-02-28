@@ -1,4 +1,5 @@
 caches/
+caches/*
 
 daemon/
 daemon/*
