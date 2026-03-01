@@ -8,10 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import teamDBMS.sDrumGuitarBE.lesson.service.LessonService;
-import teamDBMS.sDrumGuitarBE.student.dto.CreateStudentRequest;
-import teamDBMS.sDrumGuitarBE.student.dto.EveryStudent;
-import teamDBMS.sDrumGuitarBE.student.dto.StudentInfoResponse;
-import teamDBMS.sDrumGuitarBE.student.dto.StudentResponse;
+import teamDBMS.sDrumGuitarBE.student.dto.*;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 import teamDBMS.sDrumGuitarBE.student.exception.StudentNotFoundException;
 import teamDBMS.sDrumGuitarBE.student.repository.StudentRepository;
@@ -78,5 +75,33 @@ public class StudentService {
         ).toList();
     }
 
+
+    @Transactional
+    public StudentResponse updateStudent(Long studentId, UpdateStudentRequest request) {
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found")
+                );
+
+        student.updateBasicInfo(
+                request.getName(),
+                request.getAgeGroup(),
+                request.getPhone(),
+                request.getParentPhone(),
+                request.getMemo()
+        );
+
+        return StudentResponse.builder()
+                .studentId(student.getId())
+                .name(student.getName())
+                .ageGroup(student.getAgeGroup().name().toLowerCase())
+                .phone(student.getPhone())
+                .parentPhone(student.getParentPhone())
+                .memo(student.getMemo())
+                .familyDiscount(student.getFamilyDiscount())
+                .updatedAt(student.getUpdatedAt())
+                .build();
+    }
 
 }

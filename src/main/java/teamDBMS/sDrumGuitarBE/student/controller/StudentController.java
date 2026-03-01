@@ -5,10 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import teamDBMS.sDrumGuitarBE.student.dto.CreateStudentRequest;
-import teamDBMS.sDrumGuitarBE.student.dto.EveryStudent;
-import teamDBMS.sDrumGuitarBE.student.dto.StudentInfoResponse;
-import teamDBMS.sDrumGuitarBE.student.dto.StudentResponse;
+import teamDBMS.sDrumGuitarBE.student.dto.*;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
 import teamDBMS.sDrumGuitarBE.student.service.StudentService;
 
@@ -61,6 +58,15 @@ public class StudentController {
         return ResponseEntity.ok(
                 studentService.getStudentInfo(name)
         );
+    }
+
+    @PatchMapping("/students/{studentId}")
+    public ResponseEntity<StudentResponse> updateStudent(
+            @PathVariable Long studentId,
+            @RequestBody UpdateStudentRequest request
+    ) {
+        StudentResponse response = studentService.updateStudent(studentId, request);
+        return ResponseEntity.ok(response);
     }
 
 }

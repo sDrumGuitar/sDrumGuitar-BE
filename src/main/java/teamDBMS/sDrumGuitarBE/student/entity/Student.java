@@ -56,4 +56,18 @@ public class Student extends BaseEntity{
         this.familyDiscount = familyDiscount;
         this.memo = memo;
     }
+
+    public void updateBasicInfo(
+            String name,
+            AgeGroup ageGroup,
+            String phone,
+            String parentPhone,
+            String memo
+    ) {
+        this.name = name;
+        this.ageGroup = ageGroup;
+        this.phone = phone;
+        this.parentPhone = parentPhone;
+        this.memo = memo;
+    }
 }
