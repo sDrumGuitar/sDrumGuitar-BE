@@ -60,7 +60,7 @@ public class StudentController {
         );
     }
 
-    @PatchMapping("/students/{studentId}")
+    @PatchMapping("/{studentId}")
     public ResponseEntity<StudentResponse> updateStudent(
             @PathVariable Long studentId,
             @RequestBody UpdateStudentRequest request
