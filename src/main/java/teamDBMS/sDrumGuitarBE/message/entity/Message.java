@@ -23,10 +23,6 @@ public class Message extends BaseEntity {
     @JoinColumn(nullable = false)
     private Student student;
 
-    // 어떤 템플릿 기반인지 (nullable 허용)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MessageTemplate template;
-
     // 문자 종류 (출석/지각/결석/미납 등)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

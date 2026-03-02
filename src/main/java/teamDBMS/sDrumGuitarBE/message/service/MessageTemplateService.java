@@ -9,10 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateListResponse;
+import teamDBMS.sDrumGuitarBE.message.dto.*;
 import teamDBMS.sDrumGuitarBE.message.entity.MessageTemplate;
-import teamDBMS.sDrumGuitarBE.message.dto.CreateMessageTemplateRequest;
-import teamDBMS.sDrumGuitarBE.message.dto.MessageTemplateResponse;
 import teamDBMS.sDrumGuitarBE.message.entity.MessageType;
 import teamDBMS.sDrumGuitarBE.message.repository.MessageTemplateRepository;
 
@@ -71,6 +69,55 @@ public class MessageTemplateService {
                 );
 
         return MessageTemplateResponse.from(template);
+    }
+
+    @Transactional
+    public MessageTemplateResponse updateTemplate(
+            Long templateId,
+            UpdateMessageTemplateRequest request
+    ) {
+
+        if (request.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "At least one field must be provided"
+            );
+        }
+
+        MessageTemplate template = messageTemplateRepository.findById(templateId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Message template not found"
+                        )
+                );
+
+        template.update(
+                request.getType(),
+                request.getTitle(),
+                request.getContent()
+        );
+
+        return MessageTemplateResponse.from(template);
+    }
+
+    @Transactional
+    public DeleteMessageTemplateResponse deleteTemplate(Long templateId) {
+
+        MessageTemplate template = messageTemplateRepository.findById(templateId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Message template not found"
+                        )
+                );
+
+        messageTemplateRepository.delete(template);
+
+        return new DeleteMessageTemplateResponse(
+                templateId,
+                "Message template deleted successfully"
+        );
     }
 
 }

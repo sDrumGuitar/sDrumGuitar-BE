@@ -31,4 +31,23 @@ public class MessageTemplate extends BaseEntity {
         this.content = content;
     }
 
+    public void update(
+            MessageType type,
+            String title,
+            String content
+    ) {
+
+        if (type != null) {
+            this.type = type;
+        }
+
+        if (title != null) {
+            this.title = title;
+        }
+
+        if (content != null) {
+            this.content = content; // 치환되지 않은 원본 그대로 저장
+        }
+    }
+
 }
