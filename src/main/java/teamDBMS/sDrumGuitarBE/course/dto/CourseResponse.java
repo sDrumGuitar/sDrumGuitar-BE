@@ -9,6 +9,7 @@ import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleResponse;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,9 +25,9 @@ public class CourseResponse {
     private Long studentId;
 
     @JsonProperty("class_type")
-    private String classType;
+    private Course.ClassType classType;
 
-    private String status;
+    private Course.EnrollmentStatus status;
 
     @JsonProperty("lesson_count")
     private Integer lessonCount;
@@ -39,17 +40,29 @@ public class CourseResponse {
     private InvoiceResponse invoice;
 
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public static CourseResponse from(Course course) {
         return CourseResponse.builder()
                 .courseId(course.getId())
-                .invoice(InvoiceResponse.from(course.getInvoice()))
+                .studentId(course.getStudent().getId())
+                .classType(course.getClassType())
+                .status(course.getStatus())
+                .lessonCount(course.getLessonCount())
+                .startDate(course.getStartDate())
+                .createdAt(course.getCreatedAt())
+                .invoice(
+                        course.getInvoice() != null
+                                ? InvoiceResponse.from(course.getInvoice())
+                                : null
+                )
                 .schedules(
-                        course.getSchedules()
+                        course.getSchedules() != null
+                                ? course.getSchedules()
                                 .stream()
                                 .map(ScheduleResponse::from)
                                 .toList()
+                                : List.of()
                 )
                 .build();
     }
