@@ -56,6 +56,7 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course",
             cascade = CascadeType.REMOVE,
             orphanRemoval = true)
+    @Builder.Default
     private List<Lesson> lessons = new ArrayList<>();
 
     @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
