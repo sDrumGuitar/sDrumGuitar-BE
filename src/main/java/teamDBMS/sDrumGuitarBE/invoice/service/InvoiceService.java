@@ -35,7 +35,10 @@ public class InvoiceService {
                 .paidAt(invReq.getPaidAt())
                 .build();
 
-        return invoiceRepository.save(invoice);
+        Invoice saved = invoiceRepository.save(invoice);
+        course.setInvoice(saved);
+
+        return saved;
     }
 
     public StudentInvoiceListResponse getStudentInvoices(Long studentId) {

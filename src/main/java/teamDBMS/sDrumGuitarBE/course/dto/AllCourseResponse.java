@@ -21,7 +21,7 @@ public class AllCourseResponse {
     private Long courseId;
     private StudentSummary student;
     private String classType;
-    private Instant startDate;
+    private LocalDate startDate;
     private String status;
     private int lessonCount;
     private List<ScheduleResponse> schedules;

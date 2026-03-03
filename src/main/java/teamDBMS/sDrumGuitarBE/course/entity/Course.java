@@ -38,7 +38,7 @@ public class Course extends BaseEntity {
     private ClassType classType;
 
     @Column(nullable = false)
-    private Instant startDate;
+    private LocalDate startDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -79,7 +79,11 @@ public class Course extends BaseEntity {
         this.status = status;
     }
 
-    public void changeStartDate(Instant date) {
+    public void changeStartDate(LocalDate date) {
         this.startDate = date;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

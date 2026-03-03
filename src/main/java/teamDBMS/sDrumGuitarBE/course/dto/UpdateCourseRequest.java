@@ -9,6 +9,7 @@ import teamDBMS.sDrumGuitarBE.invoice.dto.InvoiceUpdateRequest;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,7 @@ public class UpdateCourseRequest {
     private Course.EnrollmentStatus status;
 
     @JsonProperty("start_date")
-    private Instant startDate;
+    private LocalDate startDate;
 
     private List<ScheduleRequest> schedules;
 

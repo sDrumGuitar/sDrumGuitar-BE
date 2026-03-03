@@ -27,7 +27,7 @@ public class LessonService {
     @Transactional
     public List<Lesson> generateLessons(
             Course course,
-            Instant startDate,
+            LocalDate startDate,
             int lessonCount,
             List<ScheduleRequest> schedules) {
 

@@ -31,7 +31,7 @@ public class CreateCourseRequest {
     private Integer lessonCount;
 
     @NotNull
-    private Instant startDate;
+    private LocalDate startDate;
 
     @NotNull
     @Size(min = 1)
