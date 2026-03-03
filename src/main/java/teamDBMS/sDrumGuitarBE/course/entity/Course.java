@@ -49,6 +49,7 @@ public class Course extends BaseEntity {
     private Integer lessonCount;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Schedule> schedules = new ArrayList<>();
 
     @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
