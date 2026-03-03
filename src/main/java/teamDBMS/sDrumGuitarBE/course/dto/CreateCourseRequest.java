@@ -6,6 +6,7 @@ import lombok.*;
 import teamDBMS.sDrumGuitarBE.invoice.dto.CreateInvoiceRequest;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class CreateCourseRequest {
     private Integer lessonCount;
 
     @NotNull
-    private LocalDate startDate;
+    private Instant startDate;
 
     @NotNull
     @Size(min = 1)

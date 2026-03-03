@@ -67,4 +67,10 @@ public class Invoice extends BaseEntity {
         this.method = method;
         this.paidAt = paidAt;
     }
+
+    public void markAsUnpaid() {
+        this.status = InvoiceStatus.UNPAID;
+        this.method = null;
+        this.paidAt = null;
+    }
 }

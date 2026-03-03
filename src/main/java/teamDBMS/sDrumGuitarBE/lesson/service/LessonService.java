@@ -27,7 +27,7 @@ public class LessonService {
     @Transactional
     public List<Lesson> generateLessons(
             Course course,
-            LocalDate startDate,
+            Instant startDate,
             int lessonCount,
             List<ScheduleRequest> schedules) {
 
@@ -44,7 +44,7 @@ public class LessonService {
         for (ScheduleRequest s : schedules) {
             DayOfWeek dow = toDayOfWeek(s.getWeekday());
 
-            LocalDate firstDate = startDate.with(TemporalAdjusters.nextOrSame(dow));
+            LocalDate firstDate = LocalDate.from(startDate.with(TemporalAdjusters.nextOrSame(dow)));
 
             ZonedDateTime firstDateTime =
                     ZonedDateTime.of(firstDate, s.getTime(), zone);

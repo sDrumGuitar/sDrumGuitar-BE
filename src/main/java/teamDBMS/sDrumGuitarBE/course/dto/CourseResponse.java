@@ -41,11 +41,16 @@ public class CourseResponse {
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
-    public static CourseResponse from(Course course, List<Schedule> schedules, Invoice invoice) {
-        return  CourseResponse.builder()
+    public static CourseResponse from(Course course) {
+        return CourseResponse.builder()
                 .courseId(course.getId())
-                .invoice(InvoiceResponse.from(invoice))
-                .schedules(schedules.stream().map(ScheduleResponse::from).toList())
+                .invoice(InvoiceResponse.from(course.getInvoice()))
+                .schedules(
+                        course.getSchedules()
+                                .stream()
+                                .map(ScheduleResponse::from)
+                                .toList()
+                )
                 .build();
     }
 }

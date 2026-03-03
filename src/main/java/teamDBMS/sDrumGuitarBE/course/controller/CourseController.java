@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import teamDBMS.sDrumGuitarBE.course.dto.AllCourseResponse;
-import teamDBMS.sDrumGuitarBE.course.dto.CoursePageResponse;
-import teamDBMS.sDrumGuitarBE.course.dto.CreateCourseRequest;
-import teamDBMS.sDrumGuitarBE.course.dto.CourseResponse;
+import teamDBMS.sDrumGuitarBE.course.dto.*;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.course.service.CourseService;
 
@@ -40,5 +37,13 @@ public class CourseController {
         return ResponseEntity.ok(
                 courseService.getCourses(status, classType, studentName, year, month, page, size)
         );
+    }
+
+    @PatchMapping("/{courseId}")
+    public ResponseEntity<CourseResponse> updateCourse(
+            @PathVariable Long courseId,
+            @RequestBody UpdateCourseRequest request
+    ) {
+        return ResponseEntity.ok(courseService.updateCourse(courseId, request));
     }
 }

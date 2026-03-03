@@ -131,6 +131,9 @@ public class InvoiceService {
             }
 
             invoice.markPaid(method,paidAt);
+
+        } else if(request.getStatus() == Invoice.InvoiceStatus.UNPAID){
+            invoice.markAsUnpaid();
         }
 
         return InvoiceUpdateResponse.from(invoice);

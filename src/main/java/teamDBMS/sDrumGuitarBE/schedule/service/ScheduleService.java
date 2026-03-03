@@ -35,4 +35,16 @@ public class ScheduleService {
                 .time(schedule.getTime())
                 .build();
     }
+
+    public void replaceSchedules(Course course, List<ScheduleRequest> reqs) {
+
+        if (reqs == null) return;
+
+        List<Schedule> newSchedules = reqs.stream()
+                .map(r -> r.toEntity(course))
+                .toList();
+
+        course.replaceSchedules(newSchedules);
+    }
+
 }

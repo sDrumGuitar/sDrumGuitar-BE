@@ -7,14 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
-@OpenAPIDefinition(
-		servers = {
-				@Server(
-						url = "https://sdrumguitar.store",
-						description = "Production Server"
-				)
-		}
-)
+//@OpenAPIDefinition(
+//		servers = {
+//				@Server(
+//						url = "https://sdrumguitar.store",
+//						description = "Production Server"
+//				)
+//		}
+//)
 
 @EnableJpaAuditing
 @SpringBootApplication

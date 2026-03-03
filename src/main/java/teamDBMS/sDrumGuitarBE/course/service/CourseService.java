@@ -3,12 +3,11 @@ package teamDBMS.sDrumGuitarBE.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import teamDBMS.sDrumGuitarBE.course.dto.AllCourseResponse;
-import teamDBMS.sDrumGuitarBE.course.dto.CoursePageResponse;
-import teamDBMS.sDrumGuitarBE.course.dto.CreateCourseRequest;
-import teamDBMS.sDrumGuitarBE.course.dto.CourseResponse;
+import org.springframework.web.server.ResponseStatusException;
+import teamDBMS.sDrumGuitarBE.course.dto.*;
 import teamDBMS.sDrumGuitarBE.course.entity.Course;
 import teamDBMS.sDrumGuitarBE.course.repository.CourseRepository;
 import teamDBMS.sDrumGuitarBE.course.repository.CourseSpecification;
@@ -47,7 +46,6 @@ public class CourseService {
         Course course = Course.builder()
                 .student(student)
                 .classType(Course.ClassType.valueOf(req.getClassType().name()))
-                //.familyDiscount(req.getFamilyDiscount())
                 .lessonCount(req.getLessonCount())
                 .startDate(req.getStartDate())
                 .build();
@@ -67,7 +65,7 @@ public class CourseService {
         lessonRepository.saveAll(sessions);
 
         // 5) Response 반환
-        return CourseResponse.from(course, schedules, invoice);
+        return CourseResponse.from(course);
     }
 
     @Transactional(readOnly = true)
@@ -100,5 +98,63 @@ public class CourseService {
                 )
                 .build();
     }
+
+    @Transactional
+    public CourseResponse updateCourse(Long courseId, UpdateCourseRequest request) {
+
+        if (request.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "At least one field must be provided"
+            );
+        }
+
+        Course course = getCourse(courseId);
+
+        updateBasicFields(course, request);
+
+        if (request.getSchedules() != null) {
+            scheduleService.replaceSchedules(course, request.getSchedules());
+        }
+
+        if (request.getInvoice() != null) {
+            invoiceService.updateInvoice(
+                    course.getInvoice().getId(),
+                    request.getInvoice()
+            );
+        }
+
+        return CourseResponse.from(course);
+    }
+
+    private Course getCourse(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Course not found"
+                        )
+                );
+    }
+
+    private void updateBasicFields(Course course, UpdateCourseRequest request) {
+
+        if (request.getClassType() != null) {
+            course.changeClassType(request.getClassType());
+        }
+
+        if (request.getLessonCount() != null) {
+            course.changeLessonCount(request.getLessonCount());
+        }
+
+        if (request.getStatus() != null) {
+            course.changeStatus(request.getStatus());
+        }
+
+        if (request.getStartDate() != null) {
+            course.changeStartDate(request.getStartDate());
+        }
+    }
+
 }
 
