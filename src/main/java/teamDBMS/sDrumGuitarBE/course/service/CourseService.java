@@ -156,5 +156,12 @@ public class CourseService {
         }
     }
 
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        Course course = getCourse(courseId);
+
+        courseRepository.delete(course);
+    }
+
 }
 
