@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 import teamDBMS.sDrumGuitarBE.invoice.entity.Invoice;
+import teamDBMS.sDrumGuitarBE.lesson.entity.Lesson;
 import teamDBMS.sDrumGuitarBE.schedule.dto.ScheduleRequest;
 import teamDBMS.sDrumGuitarBE.schedule.entity.Schedule;
 import teamDBMS.sDrumGuitarBE.student.entity.Student;
@@ -51,6 +52,11 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true)
+    private List<Lesson> lessons = new ArrayList<>();
 
     @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Invoice invoice;

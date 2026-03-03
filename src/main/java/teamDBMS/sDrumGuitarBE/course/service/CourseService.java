@@ -156,5 +156,15 @@ public class CourseService {
         }
     }
 
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Course not found"
+                ));
+
+        courseRepository.delete(course);
+    }
+
 }
 
