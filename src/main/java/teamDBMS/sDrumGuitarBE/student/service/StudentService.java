@@ -89,7 +89,7 @@ public class StudentService {
         return StudentResponse.builder()
                 .studentId(student.getId())
                 .name(student.getName())
-                .ageGroup(student.getAgeGroup().name().toLowerCase())
+                .ageGroup(student.getAgeGroup().name())
                 .phone(student.getPhone())
                 .parentPhone(student.getParentPhone())
                 .memo(student.getMemo())

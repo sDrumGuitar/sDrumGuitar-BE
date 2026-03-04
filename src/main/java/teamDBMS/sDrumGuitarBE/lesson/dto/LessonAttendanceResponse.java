@@ -32,8 +32,8 @@ public class LessonAttendanceResponse {
     public static LessonAttendanceResponse from(Lesson lesson) {
         return LessonAttendanceResponse.builder()
                 .lessonId(lesson.getId())
-                .attendanceStatus(lesson.getAttendanceStatus().name().toLowerCase())
-                .lessonTag(lesson.getLessonTag().name().toLowerCase())
+                .attendanceStatus(lesson.getAttendanceStatus().name())
+                .lessonTag(lesson.getLessonTag().name())
                 .startAt(lesson.getStartAt())
                 .beforeAt(lesson.getBeforeAt())
                 .updatedAt(lesson.getUpdatedAt()) // BaseEntity에 updatedAt 있다고 가정

@@ -66,9 +66,9 @@ public class InvoiceService {
                             .enrollmentId(course.getId())
                             .issuedAt(invoice.getIssuedAt())
                             .paidAt(invoice.getPaidAt())
-                            .status(invoice.getStatus().name().toLowerCase())
+                            .status(invoice.getStatus().name())
                             .method(invoice.getMethod() != null
-                                    ? invoice.getMethod().name().toLowerCase()
+                                    ? invoice.getMethod().name()
                                     : null)
                             .lessonCount(lessonCount)
                             .familyDiscount(familyDiscount)

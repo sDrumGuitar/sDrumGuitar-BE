@@ -140,9 +140,9 @@ public class LessonService {
                 .lessonId(l.getId())
                 .name(l.getCourse().getStudent().getName())
                 .classType(l.getCourse().getClassType().name()) // "DRUM"
-                .courseStatus(l.getCourse().getStatus().name().toLowerCase()) // "active"
-                .lessonTag(l.getLessonTag().name().toLowerCase()) // "normal"
-                .attendanceStatus(l.getAttendanceStatus().name().toLowerCase()) // "notyet"
+                .courseStatus(l.getCourse().getStatus().name())
+                .lessonTag(l.getLessonTag().name())
+                .attendanceStatus(l.getAttendanceStatus().name())
                 .startAt(l.getStartAt().toString()) // "2026-11-03T15:00"
                 .build();
     }
