@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import teamDBMS.sDrumGuitarBE.common.BaseEntity;
 
 import lombok.*;
+import teamDBMS.sDrumGuitarBE.student.dto.UpdateStudentRequest;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Student extends BaseEntity{
+public class Student extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,27 +48,26 @@ public class Student extends BaseEntity{
         }
     }
 
-    // 업데이트용 메서드 - 추후 규칙 생기면 추가
-    public void updateBasicInfo(String name, AgeGroup ageGroup, String phone, String parentPhone, boolean familyDiscount, String memo) {
-        this.name = name;
-        this.ageGroup = ageGroup;
-        this.phone = phone;
-        this.parentPhone = parentPhone;
-        this.familyDiscount = familyDiscount;
-        this.memo = memo;
-    }
+    public void updateStudent(UpdateStudentRequest request) {
 
-    public void updateBasicInfo(
-            String name,
-            AgeGroup ageGroup,
-            String phone,
-            String parentPhone,
-            String memo
-    ) {
-        this.name = name;
-        this.ageGroup = ageGroup;
-        this.phone = phone;
-        this.parentPhone = parentPhone;
-        this.memo = memo;
+        if (request.getName() != null) {
+            this.name = request.getName();
+        }
+
+        if (request.getAgeGroup() != null) {
+            this.ageGroup = request.getAgeGroup();
+        }
+
+        if (request.getPhone() != null) {
+            this.phone = request.getPhone();
+        }
+
+        if (request.getParentPhone() != null) {
+            this.parentPhone = request.getParentPhone();
+        }
+
+        if (request.getMemo() != null) {
+            this.memo = request.getMemo();
+        }
     }
 }

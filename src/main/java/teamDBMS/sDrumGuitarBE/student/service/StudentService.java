@@ -84,13 +84,7 @@ public class StudentService {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found")
                 );
 
-        student.updateBasicInfo(
-                request.getName(),
-                request.getAgeGroup(),
-                request.getPhone(),
-                request.getParentPhone(),
-                request.getMemo()
-        );
+        student.updateStudent(request);
 
         return StudentResponse.builder()
                 .studentId(student.getId())
